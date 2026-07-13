@@ -280,8 +280,17 @@
     <!-- ========== MATERIAL SECTION ========== -->
     <div class="calculator-section active" id="materialSection">
       <div class="form-group">
-        <label>⏱️ Cycle Time (seconds)</label>
-        <input type="number" id="matCycleSec" step="0.10" value="10" placeholder="e.g. 10">
+        <label>⏱️ Cycle Time (seconds) <span id="matCycleInfoBtn" style="cursor:pointer;font-size:0.78rem;background:#e0eaff;color:#2563eb;border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-weight:700;user-select:none;" title="How TO enter Cycle Time">i</span></label>
+        <div id="matCycleInfoBox" style="display:none;background:#eff6ff;border-left:3px solid #2563eb;border-radius:6px;padding:8px 12px;font-size:0.78rem;color:#1e293b;margin-bottom:6px;line-height:1.6;">
+          <strong style="color:#00442b;">—</strong> Enter Seconds Directly <strong>(e.g. 10  means 10s)</strong><br>
+          <strong style="color:#eb2521;">—</strong> OR use <strong>m-ss</strong> Format FOR Minutes &amp; Seconds:<br>
+          &nbsp;&nbsp;• <strong>2-30</strong> = 2m 30s = 150s<br>
+          &nbsp;&nbsp;• <strong>2-08</strong> = 2m 8s = 128s<br>
+          <em style="color:#4b6a8b;">Max 59 Allowed After " - "</em>
+        </div>
+        <input type="text" id="matCycleSec" inputmode="decimal" value="10" oninput="enforceCycleInput(this)">
+        <span class="validation-error" id="matCycleError" style="display:none;margin-top:4px;"></span>
+        <span class="time-info" id="matCycleConversion" style="display:none;"></span>
       </div>
 
       <div class="form-group">
@@ -309,8 +318,17 @@
     <!-- ========== TIME REMAINING SECTION ========== -->
     <div class="calculator-section" id="timeSection">
       <div class="form-group">
-        <label>⏱️ Cycle Time (seconds)</label>
-        <input type="number" id="timeCycleSec" step="0.10" value="10" placeholder="e.g. 10">
+        <label>⏱️ Cycle Time (seconds) <span id="timeCycleInfoBtn" style="cursor:pointer;font-size:0.78rem;background:#e0eaff;color:#2563eb;border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-weight:700;user-select:none;" title="How TO enter Cycle Time">i</span></label>
+        <div id="timeCycleInfoBox" style="display:none;background:#eff6ff;border-left:3px solid #2563eb;border-radius:6px;padding:8px 12px;font-size:0.78rem;color:#1e293b;margin-bottom:6px;line-height:1.6;">
+          <strong style="color:#00442b;">—</strong> Enter Seconds Directly <strong>(e.g. 10  means 10s)</strong><br>
+          <strong style="color:#eb2521;">—</strong> OR use <strong>m-ss</strong> Format FOR Minutes &amp; Seconds:<br>
+          &nbsp;&nbsp;• <strong>2-30</strong> = 2m 30s = 150s<br>
+          &nbsp;&nbsp;• <strong>2-08</strong> = 2m 8s = 128s<br>
+          <em style="color:#4b6a8b;">Max 59 Allowed After " - "</em>
+        </div>
+        <input type="text" id="timeCycleSec" inputmode="decimal" value="10" oninput="enforceCycleInput(this)">
+        <span class="validation-error" id="timeCycleError" style="display:none;margin-top:4px;"></span>
+        <span class="time-info" id="timeCycleConversion" style="display:none;"></span>
       </div>
 
       <div class="form-group">
@@ -323,10 +341,16 @@
 
       <div class="form-group">
         <label>
-          ⚓ Total Weight (Kg)
+          ⚓ Total Weight (Kg) <span id="totalWeightInfoBtn" style="cursor:pointer;font-size:0.78rem;background:#e0eaff;color:#2563eb;border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-weight:700;user-select:none;" title="How TO enter Total Weight">i</span>
           <span class="validation-error" id="totalWeightError">* Must be greater than piece weight</span>
         </label>
         <input type="text" id="timeTotalKg" inputmode="decimal" value="8.90" onkeydown="if(!/[\d\.\s]/.test(event.key) && !['Backspace','Delete','ArrowLeft','ArrowRight','Tab','Enter'].includes(event.key)) event.preventDefault()">
+          <div id="totalWeightInfoBox" style="display:none;background:#eff6ff;border-left:3px solid #2563eb;border-radius:6px;padding:8px 12px;font-size:0.78rem;color:#1e293b;margin-bottom:6px;line-height:1.6;">
+          <strong style="color:#00440b;">—</strong> Enter A Single Value <strong>(e.g. 8.90</strong> = <strong>8.90grm)</strong><br>
+          <strong style="color:#eb2523;">—</strong> OR add Multiple Values WITH <strong>Double Space</strong>:<br>
+          &nbsp;&nbsp;• <strong>8.80&nbsp;&nbsp;3&nbsp;&nbsp;1.0</strong> = 8.80 + 3 + 1.0 = 12.8Kg<br>
+          <em style="color:#4b6a8b;">Each Value = 1 Lot OF Material</em>
+        </div>
         <span class="time-info" id="totalWeightSumDisplay" style="display:none;"></span>
       </div>
 
@@ -420,6 +444,56 @@
         return parts.join(' ');
       }
 
+      // ----- cycle time parser: "3-8" → 188s, plain "30" → 30s -----
+      function enforceCycleInput(el) {
+        const val = el.value;
+        const dashIdx = val.indexOf('-');
+        if (dashIdx !== -1) {
+          const afterDash = val.slice(dashIdx + 1);
+          if (afterDash.length > 2) {
+            el.value = val.slice(0, dashIdx + 1) + afterDash.slice(0, 2);
+          }
+        }
+      }
+
+      function parseCycleInput(val) {
+        const str = val.trim();
+        const dashMatch = str.match(/^(\d+)-(\d+)$/);
+        if (dashMatch && dashMatch[2].length > 2) {
+          return { value: null, error: '* Max 59s after "-"' };
+        }
+        if (dashMatch) {
+          const mins = parseInt(dashMatch[1], 10);
+          const secs = parseInt(dashMatch[2], 10);
+          if (secs > 59) return { value: null, error: '* Max 59s after "-"' };
+          return { value: mins * 60 + secs, label: `${mins * 60 + secs}s — ${mins}m ${secs}s` };
+        }
+        const plain = parseFloat(str);
+        if (!isNaN(plain) && plain > 0) return { value: plain, label: null };
+        return { value: null, error: '* Invalid cycle time' };
+      }
+
+      function updateCycleHint(inputEl, hintEl) {
+        const errorEl = document.getElementById(inputEl.id === 'matCycleSec' ? 'matCycleError' : 'timeCycleError');
+        const result = parseCycleInput(inputEl.value);
+        if (result.error) {
+          errorEl.textContent = result.error;
+          errorEl.style.display = 'inline';
+          inputEl.classList.add('error');
+          hintEl.style.display = 'none';
+        } else {
+          errorEl.style.display = 'none';
+          inputEl.classList.remove('error');
+          if (result.label) {
+            hintEl.innerHTML = `= <strong>${result.value}s</strong> <span style="color:#000;font-weight:700;">—</span> <span style="color:#000;font-weight:400;">${Math.floor(result.value/60)}m ${result.value % 60}s</span>`;
+            hintEl.style.display = 'inline-block';
+          } else {
+            hintEl.style.display = 'none';
+          }
+        }
+        return result.value;
+      }
+
       function clamp2(v) {
         return Math.round(v * 100) / 100;
       }
@@ -480,10 +554,10 @@
 
       // ----- material calculation -----
       function computeMaterial() {
-        const cycleSec = parseFloat(matCycle.value) || 0;
-        if (cycleSec <= 0) {
+        const cycleSec = updateCycleHint(matCycle, document.getElementById('matCycleConversion'));
+        if (!cycleSec || cycleSec <= 0) {
             matResult.innerHTML = '0.00 <span style="color:black;font-weight:400;">Kg</span>';
-            matDurationDisplay.innerHTML = '⏱️ Duration: 0 min (<span style="color:#2563eb;font-weight:700;">00</span><span style="color:black;font-weight:400;">h</span> <span style="color:#2563eb;font-weight:700;">00</span><span style="color:black;font-weight:400;">m</span>)';
+            matDurationDisplay.innerHTML = 'Duration: 0 min (<span style="color:#2563eb;font-weight:700;">00</span><span style="color:black;font-weight:400;">h</span> <span style="color:#2563eb;font-weight:700;">00</span><span style="color:black;font-weight:400;">m</span>)';
             matOutputBox.classList.add('error');
           return;
         }
@@ -491,7 +565,7 @@
         const weightG = parseFloat(matWeight.value) || 0;
         if (weightG <= 0) {
             matResult.innerHTML = '0.00 <span style="color:black;font-weight:400;">Kg</span>';
-            matDurationDisplay.innerHTML = '⏱️ Duration: 0 min (<span style="color:#2563eb;font-weight:700;">00</span><span style="color:black;font-weight:400;">h</span> <span style="color:#2563eb;font-weight:700;">00</span><span style="color:black;font-weight:400;">m</span>)';
+            matDurationDisplay.innerHTML = 'Duration: 0 min (<span style="color:#2563eb;font-weight:700;">00</span><span style="color:black;font-weight:400;">h</span> <span style="color:#2563eb;font-weight:700;">00</span><span style="color:black;font-weight:400;">m</span>)';
             matOutputBox.classList.add('error');
           return;
         }
@@ -500,7 +574,7 @@
         const isDateTimeValid = validateDateTime();
         if (!isDateTimeValid) {
             matResult.innerHTML = '0.00 <span style="color:black;font-weight:400;">Kg</span>';
-            matDurationDisplay.innerHTML = '⏱️ Duration: 0 min (<span style="color:#2563eb;font-weight:700;">00</span><span style="color:black;font-weight:400;">h</span> <span style="color:#2563eb;font-weight:700;">00</span><span style="color:black;font-weight:400;">m</span>)';
+            matDurationDisplay.innerHTML = 'Duration: 0 min (<span style="color:#2563eb;font-weight:700;">00</span><span style="color:black;font-weight:400;">h</span> <span style="color:#2563eb;font-weight:700;">00</span><span style="color:black;font-weight:400;">m</span>)';
             matOutputBox.classList.add('error');
           return;
         }
@@ -527,8 +601,8 @@
 
       // ----- time remaining calculation -----
       function computeTimeRemaining() {
-        const cycleSec = parseFloat(timeCycle.value) || 0;
-        if (cycleSec <= 0) {
+        const cycleSec = updateCycleHint(timeCycle, document.getElementById('timeCycleConversion'));
+        if (!cycleSec || cycleSec <= 0) {
             timeResult.innerHTML = '<span style="color:#2563eb;font-weight:700;">00</span><span style="color:black;font-weight:400;">h</span> <span style="color:#2563eb;font-weight:700;">00</span><span style="color:black;font-weight:400;">m</span>';
           timeOutputBox.classList.add('error');
           return;
@@ -669,11 +743,27 @@ document.querySelectorAll('input, button').forEach((el) => {
         setActiveMode('time');
       });
 
+      // ----- total weight info toggle -----
+      document.getElementById('totalWeightInfoBtn').addEventListener('click', function(e) {
+        e.stopPropagation();
+        const box = document.getElementById('totalWeightInfoBox');
+        box.style.display = box.style.display === 'none' ? 'block' : 'none';
+      });
+
+      // ----- cycle info toggle -----
+      ['mat','time'].forEach(function(prefix) {
+        document.getElementById(prefix+'CycleInfoBtn').addEventListener('click', function(e) {
+          e.stopPropagation();
+          const box = document.getElementById(prefix+'CycleInfoBox');
+          box.style.display = box.style.display === 'none' ? 'block' : 'none';
+        });
+      });
+
       // Initial run
       updateAll();
       setActiveMode('material');
 
-          // Update display every 30 seconds
+          // Update display every 38 seconds
       setInterval(() => {
         if (materialSection.classList.contains('active')) {
           computeMaterial();
@@ -681,14 +771,14 @@ document.querySelectorAll('input, button').forEach((el) => {
         if (timeSection.classList.contains('active')) {
           computeTimeRemaining();
         }
-      }, 30000);
+      }, 38000);
 
     })();
 
 
 
 
-  //  13-07-2026  CLAUDE
+  //  13-07-2026  CLAUDE,CLAUDE
  // 12/13-07-2026  GEMINI,DS,DS,DS  @ MJJB-INTERNATIONAL__ O.V.VAGHASIYA
   </script>
   </body>
