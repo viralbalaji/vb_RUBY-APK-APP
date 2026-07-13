@@ -280,18 +280,18 @@
     <!-- ========== MATERIAL SECTION ========== -->
     <div class="calculator-section active" id="materialSection">
       <div class="form-group">
-        <label>⏱️ Cycle time (seconds)</label>
+        <label>⏱️ Cycle Time (seconds)</label>
         <input type="number" id="matCycleSec" step="0.10" value="10" placeholder="e.g. 10">
       </div>
 
       <div class="form-group">
-        <label>⚖️ Piece weight (grams)</label>
+        <label>⚖️ Piece Weight (grams)</label>
         <input type="number" id="matWeightG" step="0.10" value="10.20" placeholder="g">
       </div>
 
       <div class="form-group">
         <label>
-          📅 Select end date &amp; time
+          📅 Select End date &amp; time
           <span class="validation-error" id="dateTimeError">* Must be in future</span>
         </label>
         <div class="datetime-wrapper">
@@ -301,21 +301,21 @@
       </div>
 
       <div class="output-box" id="matOutputBox">
-        <p>📦 Material needed</p>
-        <span class="output-val" id="matResult">0.00 kg</span>
+        <p>📦 Material Needed</p>
+        <span class="output-val" id="matResult">0.00 Kg</span>
       </div>
     </div>
 
     <!-- ========== TIME REMAINING SECTION ========== -->
     <div class="calculator-section" id="timeSection">
       <div class="form-group">
-        <label>⏱️ Cycle time (seconds)</label>
+        <label>⏱️ Cycle Time (seconds)</label>
         <input type="number" id="timeCycleSec" step="0.10" value="10" placeholder="e.g. 10">
       </div>
 
       <div class="form-group">
         <label>
-          ⚖️ Piece weight (grams)
+          ⚖️ Piece Weight (grams)
           <span class="validation-error" id="weightError">* Must be less than total</span>
         </label>
         <input type="number" id="timeWeightG" step="0.10" value="10" placeholder="g">
@@ -323,14 +323,14 @@
 
       <div class="form-group">
         <label>
-          ⚓ Total weight (kg)
+          ⚓ Total Weight (Kg)
           <span class="validation-error" id="totalWeightError">* Must be greater than piece weight</span>
         </label>
-        <input type="number" id="timeTotalKg" step="1" value="8" placeholder="kg">
+        <input type="number" id="timeTotalKg" step="1" value="8" placeholder="Kg">
       </div>
 
       <div class="output-box" id="timeOutputBox">
-        <p>⌛ Time remaining</p>
+        <p>⌛ Time Remaining</p>
         <span class="output-val" id="timeResult">00:00</span>
       </div>
     </div>
@@ -480,7 +480,7 @@
       function computeMaterial() {
         const cycleSec = parseFloat(matCycle.value) || 0;
         if (cycleSec <= 0) {
-            matResult.innerHTML = '0.00 <span style="color:black;font-weight:400;">kg</span>';
+            matResult.innerHTML = '0.00 <span style="color:black;font-weight:400;">Kg</span>';
             matDurationDisplay.innerHTML = '⏱️ Duration: 0 min (<span style="color:#2563eb;font-weight:700;">00</span><span style="color:black;font-weight:400;">h</span> <span style="color:#2563eb;font-weight:700;">00</span><span style="color:black;font-weight:400;">m</span>)';
             matOutputBox.classList.add('error');
           return;
@@ -488,7 +488,7 @@
 
         const weightG = parseFloat(matWeight.value) || 0;
         if (weightG <= 0) {
-            matResult.innerHTML = '0.00 <span style="color:black;font-weight:400;">kg</span>';
+            matResult.innerHTML = '0.00 <span style="color:black;font-weight:400;">Kg</span>';
             matDurationDisplay.innerHTML = '⏱️ Duration: 0 min (<span style="color:#2563eb;font-weight:700;">00</span><span style="color:black;font-weight:400;">h</span> <span style="color:#2563eb;font-weight:700;">00</span><span style="color:black;font-weight:400;">m</span>)';
             matOutputBox.classList.add('error');
           return;
@@ -497,7 +497,7 @@
         // Validate datetime
         const isDateTimeValid = validateDateTime();
         if (!isDateTimeValid) {
-            matResult.innerHTML = '0.00 <span style="color:black;font-weight:400;">kg</span>';
+            matResult.innerHTML = '0.00 <span style="color:black;font-weight:400;">Kg</span>';
             matDurationDisplay.innerHTML = '⏱️ Duration: 0 min (<span style="color:#2563eb;font-weight:700;">00</span><span style="color:black;font-weight:400;">h</span> <span style="color:#2563eb;font-weight:700;">00</span><span style="color:black;font-weight:400;">m</span>)';
             matOutputBox.classList.add('error');
           return;
@@ -512,14 +512,14 @@
         matDurationDisplay.innerHTML = `Duration: ${runMinutes} min — ${durationText}`;
 
         if (runMinutes <= 0) {
-            matResult.innerHTML = '0.00 <span style="color:black;font-weight:400;">kg</span>';
+            matResult.innerHTML = '0.00 <span style="color:black;font-weight:400;">Kg</span>';
           matOutputBox.classList.add('error');
           return;
         }
 
         const totalG = weightPerMinG * runMinutes;
         const totalKg = totalG / 1000;
-        matResult.innerHTML = clamp2(totalKg).toFixed(2) + ' <span style="color:black;font-weight:400;">kg</span>';
+        matResult.innerHTML = clamp2(totalKg).toFixed(2) + ' <span style="color:black;font-weight:400;">Kg</span>';
         matOutputBox.classList.remove('error');
       }
 
