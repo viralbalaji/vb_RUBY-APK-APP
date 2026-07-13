@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <style>
+    :root {
+      --bg-color: #f4f6f9;
+      --card-bg: #ffffff;
+      --primary: #2563eb;
+      --text: #1e293b;
+      --border: #cbd5e1;
+      --danger: #dc2626;
+      --danger-bg: #fef2f2;
+      --danger-border: #fca5a5;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text);
+      padding: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+      background: var(--card-bg);
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+      text-align: center;
+      letter-spacing: -0.3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .mode-selection {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px 8px;
+      border: 2px solid var(--primary);
+      background: transparent;
+      color: var(--primary);
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-size: 0.95rem;
+      text-align: center;
+      background: white;
+    }
+
+    .btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      margin-bottom: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #0f2b4f;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .validation-error {
+      color: var(--danger);
+      font-size: 0.75rem;
+      font-weight: 400;
+    }
+
+    input,
+    select {
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      width: 100%;
+      outline: none;
+      background: white;
+      -webkit-appearance: none;
+      appearance: none;
+      transition: 0.15s;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    input.error {
+      border-color: var(--danger);
+      background: var(--danger-bg);
+    }
+
+    input.error:focus {
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+    }
+
+    input[type="datetime-local"] {
+      padding: 11px 14px;
+    }
+
+    .calculator-section {
+      display: none;
+      animation: fade 0.2s ease;
+    }
+
+    .calculator-section.active {
+      display: block;
+    }
+
+    @keyframes fade {
+      0% {
+        opacity: 0.6;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
+    .output-box {
+      margin-top: 24px;
+      padding: 16px 18px;
+      background: #eff6ff;
+      border-left: 4px solid var(--primary);
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .output-box.error {
+      background: var(--danger-bg);
+      border-left-color: var(--danger);
+    }
+
+    .output-box p {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #1e293b;
+      margin: 0;
+      transition: color 0.2s;
+    }
+
+    .output-box.error p {
+      color: var(--danger);
+    }
+
+    .output-val {
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 1.3rem;
+      background: white;
+      padding: 4px 16px;
+      border-radius: 40px;
+      letter-spacing: 0.3px;
+      min-width: 80px;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .output-box.error .output-val {
+      background: var(--danger-bg);
+      color: var(--danger);
+      border: 1px solid var(--danger-border);
+    }
+
+    .hint {
+      font-size: 0.75rem;
+      color: #4b6a8b;
+      margin-top: 4px;
+      opacity: 0.8;
+    }
+
+    .footnote {
+      margin-top: 18px;
+      text-align: center;
+      font-size: 0.7rem;
+      color: #6b84a3;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 16px;
+    }
+
+    .time-info {
+      font-size: 0.8rem;
+      color: #4b6a8b;
+      background: #f1f5f9;
+      padding: 6px 12px;
+      border-radius: 20px;
+      margin-top: 4px;
+      display: inline-block;
+    }
+
+    .datetime-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .error-message {
+      color: var(--danger);
+      font-size: 0.75rem;
+      margin-top: 4px;
+      display: none;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 18px 14px;
+      }
+      .btn {
+        font-size: 0.85rem;
+        padding: 10px 4px;
+      }
+      .output-box {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+      }
+      .output-val {
+        margin-top: 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="app">
+
+    <!-- toggle buttons -->
+    <div class="mode-selection">
+      <button class="btn active" data-mode="material" id="modeMaterialBtn">📦 Material Needed</button>
+      <button class="btn" data-mode="time" id="modeTimeBtn">⏳ Time Left</button>
+    </div>
+
+    <!-- ========== MATERIAL SECTION ========== -->
+    <div class="calculator-section active" id="materialSection">
+      <div class="form-group">
+        <label>⏱️ Cycle time (seconds)</label>
+        <input type="number" id="matCycleSec" step="0.10" value="10" placeholder="e.g. 10">
+      </div>
+
+      <div class="form-group">
+        <label>⚖️ Piece weight (grams)</label>
+        <input type="number" id="matWeightG" step="0.10" value="10.20" placeholder="g">
+      </div>
+
+      <div class="form-group">
+        <label>
+          📅 Select end date &amp; time
+          <span class="validation-error" id="dateTimeError">* Must be in future</span>
+        </label>
+        <div class="datetime-wrapper">
+          <input type="datetime-local" id="matEndDateTime" step="60">
+        </div>
+        <span class="time-info" id="matDurationDisplay">Duration: 0 min (00:00)</span>
+      </div>
+
+      <div class="output-box" id="matOutputBox">
+        <p>📦 Material needed</p>
+        <span class="output-val" id="matResult">0.00 kg</span>
+      </div>
+    </div>
+
+    <!-- ========== TIME REMAINING SECTION ========== -->
+    <div class="calculator-section" id="timeSection">
+      <div class="form-group">
+        <label>⏱️ Cycle time (seconds)</label>
+        <input type="number" id="timeCycleSec" step="0.10" value="10" placeholder="e.g. 10">
+      </div>
+
+      <div class="form-group">
+        <label>
+          ⚖️ Piece weight (grams)
+          <span class="validation-error" id="weightError">* Must be less than total</span>
+        </label>
+        <input type="number" id="timeWeightG" step="0.10" value="10" placeholder="g">
+      </div>
+
+      <div class="form-group">
+        <label>
+          ⚓ Total weight (kg)
+          <span class="validation-error" id="totalWeightError">* Must be greater than piece weight</span>
+        </label>
+        <input type="number" id="timeTotalKg" step="1" value="8" placeholder="kg">
+      </div>
+
+      <div class="output-box" id="timeOutputBox">
+        <p>⌛ Time remaining</p>
+        <span class="output-val" id="timeResult">00:00</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      "use strict";
+
+      // ----- DOM refs -----
+      const matCycle = document.getElementById('matCycleSec');
+      const matWeight = document.getElementById('matWeightG');
+      const matEndDateTime = document.getElementById('matEndDateTime');
+      const matResult = document.getElementById('matResult');
+      const matDurationDisplay = document.getElementById('matDurationDisplay');
+      const dateTimeError = document.getElementById('dateTimeError');
+      const matOutputBox = document.getElementById('matOutputBox');
+
+      const timeCycle = document.getElementById('timeCycleSec');
+      const timeWeight = document.getElementById('timeWeightG');
+      const timeTotalKg = document.getElementById('timeTotalKg');
+      const timeResult = document.getElementById('timeResult');
+      const weightError = document.getElementById('weightError');
+      const totalWeightError = document.getElementById('totalWeightError');
+      const timeOutputBox = document.getElementById('timeOutputBox');
+
+      const modeMaterialBtn = document.getElementById('modeMaterialBtn');
+      const modeTimeBtn = document.getElementById('modeTimeBtn');
+      const materialSection = document.getElementById('materialSection');
+      const timeSection = document.getElementById('timeSection');
+
+      // ----- set default datetime to +2 hours -----
+      function setDefaultDateTime() {
+        const now = new Date();
+        now.setHours(now.getHours() + 2);
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        matEndDateTime.value = `${year}-${month}-${day}T${hours}:${minutes}`;
+        matEndDateTime.min = new Date().toISOString().slice(0, 16);
+      }
+      setDefaultDateTime();
+
+      // Update min attribute on datetime-local to prevent past selection
+      setInterval(() => {
+        const now = new Date();
+        const minDateTime = now.toISOString().slice(0, 16);
+        matEndDateTime.min = minDateTime;
+      }, 60000); // update every minute
+
+      // ----- helpers -----
+      function parseDateTimeToMinutes(datetimeStr) {
+        if (!datetimeStr) return 0;
+        try {
+          const date = new Date(datetimeStr);
+          if (isNaN(date.getTime())) return 0;
+          const now = new Date();
+          const diffMs = date.getTime() - now.getTime();
+          if (diffMs <= 0) return 0;
+          return Math.floor(diffMs / (1000 * 60));
+        } catch (e) {
+          return 0;
+        }
+      }
+
+      function formatMinutesToHHMM(minutes) {
+  if (minutes < 0) minutes = 0;
+  const hrs = Math.floor(minutes / 60);
+  const mins = Math.floor(minutes % 60);
+  return `<span style="color:#2563eb;font-weight:700;">${String(hrs).padStart(2, '0')}</span><span style="color:black;font-weight:400;">h</span> <span style="color:#2563eb;font-weight:700;">${String(mins).padStart(2, '0')}</span><span style="color:black;font-weight:400;">m</span>`;
+}
+
+      function formatDuration(minutes) {
+        if (minutes < 0) minutes = 0;
+        const hrs = Math.floor(minutes / 60);
+        const mins = Math.floor(minutes % 60);
+        const days = Math.floor(hrs / 24);
+        const remainingHrs = hrs % 24;
+        let parts = [];
+        if (days > 0) parts.push(`${days}d`);
+        if (remainingHrs > 0 || days > 0) parts.push(`${remainingHrs}h`);
+        parts.push(`${mins}m`);
+        return parts.join(' ');
+      }
+
+      function clamp2(v) {
+        return Math.round(v * 100) / 100;
+      }
+
+      // ----- validation functions -----
+      function validateDateTime() {
+        const selectedDateTime = matEndDateTime.value;
+        if (!selectedDateTime) {
+          dateTimeError.style.display = 'inline';
+          matEndDateTime.classList.add('error');
+          return false;
+        }
+
+        const selected = new Date(selectedDateTime);
+        const now = new Date();
+        if (selected <= now) {
+          dateTimeError.style.display = 'inline';
+          matEndDateTime.classList.add('error');
+          return false;
+        } else {
+          dateTimeError.style.display = 'none';
+          matEndDateTime.classList.remove('error');
+          return true;
+        }
+      }
+
+      function validateWeightComparison() {
+        const pieceWeightG = parseFloat(timeWeight.value) || 0;
+        const totalWeightKg = parseFloat(timeTotalKg.value) || 0;
+        const pieceWeightKg = pieceWeightG / 1000;
+
+        let isValid = true;
+
+        if (pieceWeightG <= 0) {
+          weightError.style.display = 'inline';
+          timeWeight.classList.add('error');
+          isValid = false;
+        } else {
+          weightError.style.display = 'none';
+          timeWeight.classList.remove('error');
+        }
+
+        if (totalWeightKg <= 0) {
+          totalWeightError.style.display = 'inline';
+          timeTotalKg.classList.add('error');
+          isValid = false;
+        } else if (totalWeightKg <= pieceWeightKg) {
+          totalWeightError.style.display = 'inline';
+          timeTotalKg.classList.add('error');
+          isValid = false;
+        } else {
+          totalWeightError.style.display = 'none';
+          timeTotalKg.classList.remove('error');
+        }
+
+        return isValid;
+      }
+
+      // ----- material calculation -----
+      function computeMaterial() {
+        const cycleSec = parseFloat(matCycle.value) || 0;
+        if (cycleSec <= 0) {
+            matResult.innerHTML = '0.00 <span style="color:black;font-weight:400;">kg</span>';
+            matDurationDisplay.innerHTML = '⏱️ Duration: 0 min (<span style="color:#2563eb;font-weight:700;">00</span><span style="color:black;font-weight:400;">h</span> <span style="color:#2563eb;font-weight:700;">00</span><span style="color:black;font-weight:400;">m</span>)';
+            matOutputBox.classList.add('error');
+          return;
+        }
+
+        const weightG = parseFloat(matWeight.value) || 0;
+        if (weightG <= 0) {
+            matResult.innerHTML = '0.00 <span style="color:black;font-weight:400;">kg</span>';
+            matDurationDisplay.innerHTML = '⏱️ Duration: 0 min (<span style="color:#2563eb;font-weight:700;">00</span><span style="color:black;font-weight:400;">h</span> <span style="color:#2563eb;font-weight:700;">00</span><span style="color:black;font-weight:400;">m</span>)';
+            matOutputBox.classList.add('error');
+          return;
+        }
+
+        // Validate datetime
+        const isDateTimeValid = validateDateTime();
+        if (!isDateTimeValid) {
+            matResult.innerHTML = '0.00 <span style="color:black;font-weight:400;">kg</span>';
+            matDurationDisplay.innerHTML = '⏱️ Duration: 0 min (<span style="color:#2563eb;font-weight:700;">00</span><span style="color:black;font-weight:400;">h</span> <span style="color:#2563eb;font-weight:700;">00</span><span style="color:black;font-weight:400;">m</span>)';
+            matOutputBox.classList.add('error');
+          return;
+        }
+
+        const piecesPerMin = 60 / cycleSec;
+        const weightPerMinG = piecesPerMin * weightG;
+
+        // Calculate duration from now to selected datetime
+        const runMinutes = parseDateTimeToMinutes(matEndDateTime.value);
+        const durationText = formatDuration(runMinutes);
+        matDurationDisplay.innerHTML = `Duration: ${runMinutes} min — ${durationText}`;
+
+        if (runMinutes <= 0) {
+            matResult.innerHTML = '0.00 <span style="color:black;font-weight:400;">kg</span>';
+          matOutputBox.classList.add('error');
+          return;
+        }
+
+        const totalG = weightPerMinG * runMinutes;
+        const totalKg = totalG / 1000;
+        matResult.innerHTML = clamp2(totalKg).toFixed(2) + ' <span style="color:black;font-weight:400;">kg</span>';
+        matOutputBox.classList.remove('error');
+      }
+
+      // ----- time remaining calculation -----
+      function computeTimeRemaining() {
+        const cycleSec = parseFloat(timeCycle.value) || 0;
+        if (cycleSec <= 0) {
+            timeResult.innerHTML = '<span style="color:#2563eb;font-weight:700;">00</span><span style="color:black;font-weight:400;">h</span> <span style="color:#2563eb;font-weight:700;">00</span><span style="color:black;font-weight:400;">m</span>';
+          timeOutputBox.classList.add('error');
+          return;
+        }
+
+        const weightG = parseFloat(timeWeight.value) || 0;
+        if (weightG <= 0) {
+            timeResult.innerHTML = '<span style="color:#2563eb;font-weight:700;">00</span><span style="color:black;font-weight:400;">h</span> <span style="color:#2563eb;font-weight:700;">00</span><span style="color:black;font-weight:400;">m</span>';          
+            timeOutputBox.classList.add('error');
+          return;
+        }
+
+        const totalKg = parseFloat(timeTotalKg.value) || 0;
+        if (totalKg <= 0) {
+            timeResult.innerHTML = '<span style="color:#2563eb;font-weight:700;">00</span><span style="color:black;font-weight:400;">h</span> <span style="color:#2563eb;font-weight:700;">00</span><span style="color:black;font-weight:400;">m</span>';          timeOutputBox.classList.add('error');
+          return;
+        }
+
+        // Validate weight comparison
+        const isValidWeight = validateWeightComparison();
+        if (!isValidWeight) {
+            timeResult.innerHTML = '<span style="color:#2563eb;font-weight:700;">00</span><span style="color:black;font-weight:400;">h</span> <span style="color:#2563eb;font-weight:700;">00</span><span style="color:black;font-weight:400;">m</span>';
+          timeOutputBox.classList.add('error');
+          return;
+        }
+
+        const piecesPerMin = 60 / cycleSec;
+        const weightPerMinG = piecesPerMin * weightG;
+        const totalG = totalKg * 1000;
+
+        const minutesNeeded = totalG / weightPerMinG;
+        if (!isFinite(minutesNeeded) || minutesNeeded <= 0) {
+            timeResult.innerHTML = '<span style="color:#2563eb;font-weight:700;">00</span><span style="color:black;font-weight:400;">h</span> <span style="color:#2563eb;font-weight:700;">00</span><span style="color:black;font-weight:400;">m</span>';
+          timeOutputBox.classList.add('error');
+          return;
+        }
+        timeResult.innerHTML = formatMinutesToHHMM(minutesNeeded);
+        timeOutputBox.classList.remove('error');
+      }
+
+      // ----- update all -----
+      function updateAll() {
+        computeMaterial();
+        computeTimeRemaining();
+      }
+
+      // ----- attach events -----
+      const allInputs = [matCycle, matWeight, matEndDateTime, timeCycle, timeWeight, timeTotalKg];
+      allInputs.forEach(inp => {
+        inp.addEventListener('input', updateAll);
+        inp.addEventListener('change', updateAll);
+      });
+
+      // Special validation for datetime picker
+      matEndDateTime.addEventListener('change', function() {
+        validateDateTime();
+        updateAll();
+      });
+
+      // Special validation for weight comparison
+      timeWeight.addEventListener('input', function() {
+        validateWeightComparison();
+        updateAll();
+      });
+      timeTotalKg.addEventListener('input', function() {
+        validateWeightComparison();
+        updateAll();
+      });
+
+// ----- ENTER key: select value, then shift focus (mobile+desktop) -----
+document.querySelectorAll('input, button').forEach((el) => {
+  el.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      
+      // Select the current field's value - works on mobile
+      if (this.tagName === 'INPUT' && this.type !== 'button' && this.type !== 'datetime-local' && this.type !== 'time') {
+        setTimeout(() => {
+          this.select();
+          this.setSelectionRange(0, this.value.length);
+        }, 10);
+      }
+      
+      // Move to next focusable element
+      const focusable = Array.from(document.querySelectorAll('input, button'));
+      const idx = focusable.indexOf(this);
+      if (idx !== -1 && idx < focusable.length - 1) {
+        setTimeout(() => {
+          const nextField = focusable[idx + 1];
+          nextField.focus();
+          // Select the next field's value too (if it's a number input)
+          if (nextField.tagName === 'INPUT' && nextField.type !== 'button' && nextField.type !== 'datetime-local' && nextField.type !== 'time') {
+            nextField.select();
+            nextField.setSelectionRange(0, nextField.value.length);
+          }
+        }, 50);
+      } else {
+        this.blur();
+      }
+      updateAll();
+    }
+  });
+});
+
+
+      // ----- toggle mode (Material / Time) -----
+      function setActiveMode(mode) {
+        if (mode === 'material') {
+          modeMaterialBtn.classList.add('active');
+          modeTimeBtn.classList.remove('active');
+          materialSection.classList.add('active');
+          timeSection.classList.remove('active');
+        } else {
+          modeTimeBtn.classList.add('active');
+          modeMaterialBtn.classList.remove('active');
+          timeSection.classList.add('active');
+          materialSection.classList.remove('active');
+        }
+        updateAll();
+      }
+
+      modeMaterialBtn.addEventListener('click', function() {
+        setActiveMode('material');
+      });
+
+      modeTimeBtn.addEventListener('click', function() {
+        setActiveMode('time');
+      });
+
+      // Initial run
+      updateAll();
+      setActiveMode('material');
+
+      // Update duration display every minute
+      setInterval(() => {
+        if (materialSection.classList.contains('active')) {
+          computeMaterial();
+        }
+      }, 30000);
+
+    })();
+
+
+    
+ // 12/13-07-2026  GEMINI,DS,DS,DS
+</script>
+</body>
+</html>
