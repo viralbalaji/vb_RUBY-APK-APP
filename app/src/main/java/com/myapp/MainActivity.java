@@ -26,9 +26,9 @@ public class MainActivity extends AppCompatActivity {
         webView.setWebViewClient(new WebViewClient());
 
         // ── Load your HTML from assets ──────────────────────────────────
-        // Drop your HTML file at:  app/src/main/assets/index.html
+        // Drop your HTML file at:  app/src/main/assets/
         // ────────────────────────────────────────────────────────────────
-        webView.loadUrl("file:///android_asset/index.html");
+        webView.loadUrl("file:///android_asset/RUBY - REDIRECTOR.html");
     }
 
     // Handle Android back button inside WebView
@@ -40,4 +40,8 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
+
+
+
+  //  12-07 to 13-07-2026 CLAUDE  
 }
