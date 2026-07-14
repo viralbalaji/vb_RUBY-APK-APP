@@ -128,13 +128,12 @@
         }
 
         // ── Hold-2s logic ──
-        let holdTimer = null, currentTarget = null, holdFired = false;
+        let holdTimer = null, currentTarget = null;
 
         function startHold(e) {
           currentTarget = e.currentTarget.id;
-          holdFired = false;
           holdTimer = setTimeout(() => {
-            holdFired = true;
+            e.preventDefault();
             openDialog(currentTarget);
             holdTimer = null;
           }, 2000);
@@ -146,18 +145,12 @@
         ['btn-costing','btn-material'].forEach(id => {
           const el = document.getElementById(id);
           el.addEventListener('mousedown',  startHold);
-          el.addEventListener('touchstart', startHold, { passive: false });
+          el.addEventListener('touchstart', startHold, { passive: true });
           el.addEventListener('mouseup',    cancelHold);
           el.addEventListener('touchend',   cancelHold);
           el.addEventListener('mouseleave', cancelHold);
-          // Block navigation entirely if a hold was detected (opened the dialog)
-          el.addEventListener('click', e => {
-            if (holdFired) {
-              e.preventDefault();
-              e.stopPropagation();
-              holdFired = false;
-            }
-          });
+          // Block navigation if hold was detected
+          el.addEventListener('click', e => { if (holdTimer === null && currentTarget === id) { /* let it go */ } });
         });
 
         // ── Open dialog for the right store ──
