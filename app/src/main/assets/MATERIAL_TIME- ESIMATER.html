@@ -340,7 +340,7 @@
           ⚓ Total Weight (Kg) <span id="totalWeightInfoBtn" style="cursor:pointer;font-size:0.78rem;background:#e0eaff;color:#2563eb;border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-weight:700;user-select:none;" title="How TO enter Total Weight">i</span>
           <span class="validation-error" id="totalWeightError">* Must be greater than piece weight</span>
         </label>
-        <input type="text" id="timeTotalKg" inputmode="decimal" value="8.90" onkeydown="if(!/[\d\.\s]/.test(event.key) && !['Backspace','Delete','ArrowLeft','ArrowRight','Tab','Enter'].includes(event.key)) event.preventDefault()">
+        <input type="text" id="timeTotalKg" inputmode="decimal" value="8.90" onkeydown="if(event.key==='Enter'){event.preventDefault();const _s=document.getElementById('timeProductSelect');_s.focus();_s.dispatchEvent(new MouseEvent('mousedown',{bubbles:true}));}else if(!/[\d\.\s]/.test(event.key) && !['Backspace','Delete','ArrowLeft','ArrowRight','Tab'].includes(event.key)) event.preventDefault()">
           <div id="totalWeightInfoBox" style="display:none;background:#eff6ff;border-left:3px solid #2563eb;border-radius:6px;padding:8px 12px;font-size:0.78rem;color:#1e293b;margin-bottom:6px;line-height:1.6;">
           <strong style="color:#00440b;">—</strong> Enter A Single Value <strong>(e.g. 8.90</strong> = <strong>8.90grm)</strong><br>
           <strong style="color:#eb2523;">—</strong> OR add Multiple Values WITH <strong>Double Space</strong>:<br>
@@ -736,6 +736,7 @@
       matEndDateTime.addEventListener('change', function() {
         validateDateTime();
         updateAll();
+        document.getElementById('matCycleSec').focus();
       });
 
       // Special validation for weight comparison
@@ -838,8 +839,7 @@ document.querySelectorAll('input, button').forEach((el) => {
     })();
 
 
-
-
+  //  15-07-2026  CLAUDE
   //  14-07-2026  CLAUDE
   //  13-07-2026  CLAUDE,CLAUDE
  // 12/13-07-2026  GEMINI,DS,DS,DS  @ MJJB-INTERNATIONAL__ O.V.VAGHASIYA
