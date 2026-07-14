@@ -170,20 +170,8 @@ const TAX_PERCENT = 9;
     const DERIVED_DIVISOR = 1.18;   // NEW: 1.18 division constant
     const SYSTEM_DIVISOR = 1000;
 
-    // Factory Configurations[cite: 1]
-    const DEFAULT_PRESETS_C = {
-        "125 ml":      { val1: 40, val2: 45.60,  val3: 10     },
-        "150 ml":      { val1: 40, val2: 45.60,  val3: 10.40  },
-        "250 ml":      { val1: 40, val2: 23,     val3: 12     },
-   "250 ml FLAT":      { val1: 40, val2: 23,     val3: 12     },
-        "300 ml":      { val1: 40, val2: 27.40,  val3: 16.60  },
-        "400 ml":      { val1: 40, val2: 14.60,  val3: 18.40  },
-        "500 ml":      { val1: 40, val2: 11.90,  val3: 18.90  },
-   "500 ml TALL":      { val1: 40, val2: 11.90,  val3: 18.90  },
-        "600 ml":      { val1: 40, val2: 26.80,  val3: 22.90  },
-        "750 ml":      { val1: 40, val2: 20.10,  val3: 24.84  },
-       "1000 ml":      { val1: 40, val2: 21.70,  val3: 28.70  }
-    };
+    // Factory Configurations — startup defaults now come solely from RUBY - REDIRECTOR.html
+    const DEFAULT_PRESETS_C = {};
     const dataPresets = (function() {
       try { return JSON.parse(localStorage.getItem('presets_costing')) || DEFAULT_PRESETS_C; }
       catch(e) { return DEFAULT_PRESETS_C; }
