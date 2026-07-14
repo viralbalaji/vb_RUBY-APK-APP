@@ -280,6 +280,35 @@
     <!-- ========== MATERIAL SECTION ========== -->
     <div class="calculator-section active" id="materialSection">
       <div class="form-group">
+        <label>🛄 Product</label>
+        <select id="matProductSelect" onchange="applyPreset(this, document.getElementById('matWeightG'))">
+          <option value="">— Select Product —</option>
+          <option value="125 ml">125 ml</option>
+          <option value="150 ml">150 ml</option>
+          <option value="250 ml">250 ml</option>
+          <option value="250 ml FLAT">250 ml FLAT</option>
+          <option value="300 ml">300 ml</option>
+          <option value="400 ml">400 ml</option>
+          <option value="500 ml">500 ml</option>
+          <option value="500 ml TALL">500 ml TALL</option>
+          <option value="600 ml">600 ml</option>
+          <option value="750 ml">750 ml</option>
+          <option value="1000 ml">1000 ml</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>
+          📅 Select End date &amp; time
+          <span class="validation-error" id="dateTimeError">* Must be in future</span>
+        </label>
+        <div class="datetime-wrapper">
+          <input type="datetime-local" id="matEndDateTime" step="60">
+        </div>
+        <span class="time-info" id="matDurationDisplay">Duration: 0 min (00:00)</span>
+      </div>
+
+      <div class="form-group">
         <label>⏱️ Cycle Time (seconds) <span id="matCycleInfoBtn" style="cursor:pointer;font-size:0.78rem;background:#e0eaff;color:#2563eb;border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-weight:700;user-select:none;" title="How TO enter Cycle Time">i</span></label>
         <div id="matCycleInfoBox" style="display:none;background:#eff6ff;border-left:3px solid #2563eb;border-radius:6px;padding:8px 12px;font-size:0.78rem;color:#1e293b;margin-bottom:6px;line-height:1.6;">
           <strong style="color:#00442b;">—</strong> Enter Seconds Directly <strong>(e.g. 10  means 10s)</strong><br>
@@ -298,17 +327,6 @@
         <input type="number" id="matWeightG" step="0.10" value="10.20" placeholder="g">
       </div>
 
-      <div class="form-group">
-        <label>
-          📅 Select End date &amp; time
-          <span class="validation-error" id="dateTimeError">* Must be in future</span>
-        </label>
-        <div class="datetime-wrapper">
-          <input type="datetime-local" id="matEndDateTime" step="60">
-        </div>
-        <span class="time-info" id="matDurationDisplay">Duration: 0 min (00:00)</span>
-      </div>
-
       <div class="output-box" id="matOutputBox">
         <p>📦 Material Needed</p>
         <span class="output-val" id="matResult">0.00 Kg</span>
@@ -316,7 +334,40 @@
     </div>
 
     <!-- ========== TIME REMAINING SECTION ========== -->
-    <div class="calculator-section" id="timeSection">
+    <div class="calculator-section" id="timeSection"> 
+      <div class="form-group">
+        <label>
+          ⚓ Total Weight (Kg) <span id="totalWeightInfoBtn" style="cursor:pointer;font-size:0.78rem;background:#e0eaff;color:#2563eb;border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-weight:700;user-select:none;" title="How TO enter Total Weight">i</span>
+          <span class="validation-error" id="totalWeightError">* Must be greater than piece weight</span>
+        </label>
+        <input type="text" id="timeTotalKg" inputmode="decimal" value="8.90" onkeydown="if(!/[\d\.\s]/.test(event.key) && !['Backspace','Delete','ArrowLeft','ArrowRight','Tab','Enter'].includes(event.key)) event.preventDefault()">
+          <div id="totalWeightInfoBox" style="display:none;background:#eff6ff;border-left:3px solid #2563eb;border-radius:6px;padding:8px 12px;font-size:0.78rem;color:#1e293b;margin-bottom:6px;line-height:1.6;">
+          <strong style="color:#00440b;">—</strong> Enter A Single Value <strong>(e.g. 8.90</strong> = <strong>8.90grm)</strong><br>
+          <strong style="color:#eb2523;">—</strong> OR add Multiple Values WITH <strong>Double Space</strong>:<br>
+          &nbsp;&nbsp;• <strong>8.80&nbsp;&nbsp;3&nbsp;&nbsp;1.0</strong> = 8.80 + 3 + 1.0 = 12.8Kg<br>
+          <em style="color:#4b6a8b;">Each Value = 1 Lot OF Material</em>
+        </div>
+        <span class="time-info" id="totalWeightSumDisplay" style="display:none;"></span>
+      </div>
+      
+      <div class="form-group">
+        <label>🛄 Product</label>
+        <select id="timeProductSelect" onchange="applyPreset(this, document.getElementById('timeWeightG'))">
+          <option value="">— Select Product —</option>
+          <option value="125 ml">125 ml</option>
+          <option value="150 ml">150 ml</option>
+          <option value="250 ml">250 ml</option>
+          <option value="250 ml FLAT">250 ml FLAT</option>
+          <option value="300 ml">300 ml</option>
+          <option value="400 ml">400 ml</option>
+          <option value="500 ml">500 ml</option>
+          <option value="500 ml TALL">500 ml TALL</option>
+          <option value="600 ml">600 ml</option>
+          <option value="750 ml">750 ml</option>
+          <option value="1000 ml">1000 ml</option>
+        </select>
+      </div>
+
       <div class="form-group">
         <label>⏱️ Cycle Time (seconds) <span id="timeCycleInfoBtn" style="cursor:pointer;font-size:0.78rem;background:#e0eaff;color:#2563eb;border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-weight:700;user-select:none;" title="How TO enter Cycle Time">i</span></label>
         <div id="timeCycleInfoBox" style="display:none;background:#eff6ff;border-left:3px solid #2563eb;border-radius:6px;padding:8px 12px;font-size:0.78rem;color:#1e293b;margin-bottom:6px;line-height:1.6;">
@@ -337,21 +388,6 @@
           <span class="validation-error" id="weightError">* Must be less than total</span>
         </label>
         <input type="number" id="timeWeightG" step="0.10" value="10" placeholder="g">
-      </div>
-
-      <div class="form-group">
-        <label>
-          ⚓ Total Weight (Kg) <span id="totalWeightInfoBtn" style="cursor:pointer;font-size:0.78rem;background:#e0eaff;color:#2563eb;border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-weight:700;user-select:none;" title="How TO enter Total Weight">i</span>
-          <span class="validation-error" id="totalWeightError">* Must be greater than piece weight</span>
-        </label>
-        <input type="text" id="timeTotalKg" inputmode="decimal" value="8.90" onkeydown="if(!/[\d\.\s]/.test(event.key) && !['Backspace','Delete','ArrowLeft','ArrowRight','Tab','Enter'].includes(event.key)) event.preventDefault()">
-          <div id="totalWeightInfoBox" style="display:none;background:#eff6ff;border-left:3px solid #2563eb;border-radius:6px;padding:8px 12px;font-size:0.78rem;color:#1e293b;margin-bottom:6px;line-height:1.6;">
-          <strong style="color:#00440b;">—</strong> Enter A Single Value <strong>(e.g. 8.90</strong> = <strong>8.90grm)</strong><br>
-          <strong style="color:#eb2523;">—</strong> OR add Multiple Values WITH <strong>Double Space</strong>:<br>
-          &nbsp;&nbsp;• <strong>8.80&nbsp;&nbsp;3&nbsp;&nbsp;1.0</strong> = 8.80 + 3 + 1.0 = 12.8Kg<br>
-          <em style="color:#4b6a8b;">Each Value = 1 Lot OF Material</em>
-        </div>
-        <span class="time-info" id="totalWeightSumDisplay" style="display:none;"></span>
       </div>
 
       <div class="output-box" id="timeOutputBox">
@@ -387,6 +423,28 @@
       const modeTimeBtn = document.getElementById('modeTimeBtn');
       const materialSection = document.getElementById('materialSection');
       const timeSection = document.getElementById('timeSection');
+
+      // ----- product presets -----
+      const dataPresets = {
+        "125 ml":      10,
+        "150 ml":      10.40,
+        "250 ml":      12,
+        "250 ml FLAT": 12,
+        "300 ml":      16.60,
+        "400 ml":      18.40,
+        "500 ml":      18.90,
+        "500 ml TALL": 18.90,
+        "600 ml":      22.90,
+        "750 ml":      24.84,
+        "1000 ml":     28.70
+      };
+
+      function applyPreset(selectEl, weightInputEl) {
+        const val = dataPresets[selectEl.value];
+        if (val !== undefined) weightInputEl.value = val;
+        updateAll();
+      }
+      window.applyPreset = applyPreset;
 
       // ----- set default datetime to +2 hours -----
       function setDefaultDateTime() {
@@ -774,10 +832,6 @@ document.querySelectorAll('input, button').forEach((el) => {
       }, 38000);
 
     })();
-
-
-
-
   //  13-07-2026  CLAUDE,CLAUDE
  // 12/13-07-2026  GEMINI,DS,DS,DS  @ MJJB-INTERNATIONAL__ O.V.VAGHASIYA
      </script>
