@@ -281,7 +281,7 @@
     <div class="calculator-section active" id="materialSection">
       <div class="form-group">
         <label>🛄 Product</label>
-        <select id="matProductSelect" onchange="applyPreset(this, document.getElementById('matWeightG'))" style="font-weight:bold;">
+        <select id="matProductSelect" onchange="applyPreset(this, document.getElementById('matWeightG')); const _dt=document.getElementById('matEndDateTime'); _dt.focus(); _dt.click(); _dt.showPicker();" style="font-weight:bold;">
           <option value="">— Select Product —</option>
           <option value="125 ml">125 ml</option>
           <option value="150 ml">150 ml</option>
@@ -352,7 +352,7 @@
       
       <div class="form-group">
         <label>🛄 Product</label>
-        <select id="timeProductSelect" onchange="applyPreset(this, document.getElementById('timeWeightG'))" style="font-weight:bold;">
+        <select id="timeProductSelect" onchange="applyPreset(this, document.getElementById('timeWeightG')); document.getElementById('timeCycleSec').focus();" style="font-weight:bold;">
           <option value="">— Select Product —</option>
           <option value="125 ml">125 ml</option>
           <option value="150 ml">150 ml</option>
