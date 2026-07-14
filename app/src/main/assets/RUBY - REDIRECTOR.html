@@ -172,16 +172,16 @@
               row.innerHTML = `
                 <span style="width:90px;font-weight:bold;font-size:13px;">${label}</span>
                 <input data-key="${label}" data-field="val1" type="number" value="${val.val1}"
-                  placeholder="val1" style="width:60px;padding:4px;border-radius:6px;border:1px solid #ccc;">
+                  placeholder="val1" onfocus="this.select()" style="width:60px;padding:4px;border-radius:6px;border:1px solid #ccc;">
                 <input data-key="${label}" data-field="val2" type="number" value="${val.val2}"
-                  placeholder="val2" style="width:70px;padding:4px;border-radius:6px;border:1px solid #ccc;">
+                  placeholder="val2" onfocus="this.select()" style="width:70px;padding:4px;border-radius:6px;border:1px solid #ccc;">
                 <input data-key="${label}" data-field="val3" type="number" value="${val.val3}"
-                  placeholder="val3" style="width:70px;padding:4px;border-radius:6px;border:1px solid #ccc;">`;
+                  placeholder="val3" onfocus="this.select()" style="width:70px;padding:4px;border-radius:6px;border:1px solid #ccc;">`;
             } else {
               row.innerHTML = `
                 <span style="width:90px;font-weight:bold;font-size:13px;">${label}</span>
                 <input data-key="${label}" type="number" value="${val}"
-                  placeholder="weight" style="width:90px;padding:4px;border-radius:6px;border:1px solid #ccc;">`;
+                  placeholder="weight" onfocus="this.select()" style="width:90px;padding:4px;border-radius:6px;border:1px solid #ccc;">`;
             }
             container.appendChild(row);
           });
