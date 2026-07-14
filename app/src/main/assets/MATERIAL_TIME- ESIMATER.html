@@ -283,17 +283,6 @@
         <label>🛄 Product</label>
         <select id="matProductSelect" onchange="applyPreset(this, document.getElementById('matWeightG')); const _dt=document.getElementById('matEndDateTime'); _dt.focus(); _dt.click(); _dt.showPicker();" style="font-weight:bold;">
           <option value="">— Select Product —</option>
-          <option value="125 ml">125 ml</option>
-          <option value="150 ml">150 ml</option>
-          <option value="250 ml">250 ml</option>
-          <option value="250 ml FLAT">250 ml FLAT</option>
-          <option value="300 ml">300 ml</option>
-          <option value="400 ml">400 ml</option>
-          <option value="500 ml">500 ml</option>
-          <option value="500 ml TALL">500 ml TALL</option>
-          <option value="600 ml">600 ml</option>
-          <option value="750 ml">750 ml</option>
-          <option value="1000 ml">1000 ml</option>
         </select>
       </div>
 
@@ -354,17 +343,6 @@
         <label>🛄 Product</label>
         <select id="timeProductSelect" onchange="applyPreset(this, document.getElementById('timeWeightG')); document.getElementById('timeCycleSec').focus();" style="font-weight:bold;">
           <option value="">— Select Product —</option>
-          <option value="125 ml">125 ml</option>
-          <option value="150 ml">150 ml</option>
-          <option value="250 ml">250 ml</option>
-          <option value="250 ml FLAT">250 ml FLAT</option>
-          <option value="300 ml">300 ml</option>
-          <option value="400 ml">400 ml</option>
-          <option value="500 ml">500 ml</option>
-          <option value="500 ml TALL">500 ml TALL</option>
-          <option value="600 ml">600 ml</option>
-          <option value="750 ml">750 ml</option>
-          <option value="1000 ml">1000 ml</option>
         </select>
       </div>
 
@@ -424,24 +402,23 @@
       const materialSection = document.getElementById('materialSection');
       const timeSection = document.getElementById('timeSection');
 
-      // ----- product presets -----
-      const DEFAULT_PRESETS_M = {
-        "125 ml":      10,
-        "150 ml":      10.40,
-        "250 ml":      12,
-        "250 ml FLAT": 12,
-        "300 ml":      16.60,
-        "400 ml":      18.40,
-        "500 ml":      18.90,
-        "500 ml TALL": 18.90,
-        "600 ml":      22.90,
-        "750 ml":      24.84,
-        "1000 ml":     28.70
-      };
+      // ----- product presets — startup defaults now come solely from RUBY - REDIRECTOR.html -----
+      const DEFAULT_PRESETS_M = {};
       const dataPresets = (function() {
         try { return JSON.parse(localStorage.getItem('presets_material')) || DEFAULT_PRESETS_M; }
         catch(e) { return DEFAULT_PRESETS_M; }
       })();
+
+      // Populate product dropdowns dynamically from dataPresets
+      ['matProductSelect','timeProductSelect'].forEach(id => {
+        const sel = document.getElementById(id);
+        Object.keys(dataPresets).forEach(key => {
+          const opt = document.createElement('option');
+          opt.value = key;
+          opt.textContent = key;
+          sel.appendChild(opt);
+        });
+      });
 
       function applyPreset(selectEl, weightInputEl) {
         const val = dataPresets[selectEl.value];
