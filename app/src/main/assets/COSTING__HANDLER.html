@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: #f0f2f5;
+            color: #1c1e21;
+            padding: 40px 20px;
+            margin: 0;
+        }
+        .calculator-container {
+            max-width: 460px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            transition: transform 0.2s ease;
+        }
+        .calculator-container:hover {
+            transform: translateY(-2px);
+        }
+        h2 {
+            margin: 0 0 24px 0;
+            color: #0f172a;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 12px;
+        }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        select, input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 15px;
+            color: #1e293b;
+            background-color: #f8fafc;
+            transition: all 0.2s ease;
+        }
+        select:focus, input[type="number"]:focus {
+            border-color: #2563eb;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            outline: none;
+        }
+        .result-panel {
+            margin-top: 28px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .result-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #166534;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+        .result-display {
+            font-size: 32px;
+            font-weight: 800;
+            color: #14532d;
+            font-variant-numeric: tabular-nums;
+        }
+    </style>
+</head>
+<body>
+
+<div class="calculator-container">
+   <!-- <h2></h2>-->
+    
+<!-- Step 1: Selector (Tab Index 1) -->
+<div class="form-group">
+    <select id="itemName" tabindex="1" style="font-weight:bold;" onchange="document.getElementById('rate').focus()">
+        <!-- Automatically populated from JavaScript dataPresets -->
+    </select>
+</div>
+
+    <!-- Step 2: Input Rate (Tab Index 2) -->
+    <div class="form-group">
+        <label for="val3">--  Material ₹/kg</label>
+        <input type="number" id="rate" step="0.20" value="00.00" tabindex="2" onfocus="this.select()">
+    </div>
+
+    <!-- Step 3: Changeable Addend 1 (Tab Index 3) -->
+    <div class="form-group">
+        <input type="number" id="val1" step="0.10" tabindex="3" onfocus="this.select()">
+    </div>
+
+    <!-- Step 4: Changeable Addend 2 (Tab Index 4) -->
+    <div class="form-group">
+        <input type="number" id="val2" step="0.10" tabindex="4" onfocus="this.select()">
+    </div>
+
+<!-- Step 5: Changeable Multiplier (Tab Index 5) -->
+<div class="form-group">
+    <label for="val3">--  Weight: <span id="weightCalcDisplay" style="text-transform: none; font-weight: 800; color: #000000;">0.00</span></label>
+    <input type="number" id="val3" step="0.2" tabindex="5" onfocus="this.select()">
+</div>
+
+<!-- Real-time Output Panel -->
+<style>
+    .result-flex-container {
+        display: flex;
+        justify-content: space-around;
+        gap: 15px;
+        margin-top: 28px;
+    }
+    .result-sub-panel {
+        flex: 1;
+        padding: 15px;
+        background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+        border: 1px solid #fca5a5;
+        border-radius: 8px;
+        text-align: center;
+    }
+    .result-sub-label {
+        font-size: 11px;
+        font-weight: 700;
+        color: #0369a1;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 6px;
+    }
+    .result-display {
+        font-size: 32px;
+        font-weight: 800;
+        font-variant-numeric: tabular-nums;
+    }
+</style>
+<div class="result-flex-container">
+    <!-- Final Amount Panel (RED) -->
+    <div class="result-sub-panel">
+        <div class="result-sub-label"></div>
+        <div class="result-display" id="outputValue" style="color: #0c4a6e;">0.00</div>
+    </div>
+    <!-- Derived Panel (BLUE) -->
+    <div class="result-sub-panel" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-color: #bae6fd;">
+        <div class="result-sub-label" style="color: #991b1b;"></div>
+        <div class="result-display" id="derivedValue" style="color: #7f1d1d;">0.00</div>
+    </div>
+</div>
+</div>
+
+<script>
+// System Constants
+const TAX_PERCENT = 9;
+    const ADDITIONAL_PERCENT = 2; 
+    const DERIVED_ADD_PERCENT = 5;  // NEW: 5% addition constant
+    const DERIVED_DIVISOR = 1.18;   // NEW: 1.18 division constant
+    const SYSTEM_DIVISOR = 1000;
+
+    // Factory Configurations — startup defaults now come solely from RUBY - REDIRECTOR.html
+    const DEFAULT_PRESETS_C = {};
+    const dataPresets = (function() {
+      try { return JSON.parse(localStorage.getItem('presets_costing')) || DEFAULT_PRESETS_C; }
+      catch(e) { return DEFAULT_PRESETS_C; }
+    })();
+
+
+// Main Processing Core
+function executeCalculation() {
+        const rate = parseFloat(document.getElementById("rate").value) || 0;
+        const add1 = parseFloat(document.getElementById("val1").value) || 0;
+        const add2 = parseFloat(document.getElementById("val2").value) || 0;
+        const mult = parseFloat(document.getElementById("val3").value) || 0;
+
+        // Mathematical execution steps[cite: 1]
+        let internalSum = rate * (1 + (TAX_PERCENT / 100)); // Add 9%[cite: 1]
+        internalSum += add1;                               // Add Val 1[cite: 1]
+        internalSum += add2;                               // Add Val 2[cite: 1]
+        internalSum /= SYSTEM_DIVISOR;                     // Divide by 1000[cite: 1]
+        
+        let absoluteOutput = internalSum * mult;           // Multiply Val 3[cite: 1]
+
+        // Add 2% on the final output value to get final amount
+        absoluteOutput = absoluteOutput * (1 + (ADDITIONAL_PERCENT / 100));
+
+        // NEW CALCULATION: Take final amount, add 5%, then divide by 1.18
+        let secondaryAmount = absoluteOutput * (1 + (DERIVED_ADD_PERCENT / 100));
+        secondaryAmount = secondaryAmount / DERIVED_DIVISOR;
+
+        // NEW WEIGHT LABEL FORMULA: (val2 / 1000) * val3
+        const weightCalculation = (add2 / 1000) * mult;
+
+        // Render all outputs to UI
+        document.getElementById("outputValue").innerText = absoluteOutput.toFixed(2);
+        document.getElementById("derivedValue").innerText = secondaryAmount.toFixed(2);
+        document.getElementById("weightCalcDisplay").innerText = weightCalculation.toFixed(2); 
+    }
+
+    // Handles preset selection shifts without dropping current user interaction
+    function handlePresetShift() {
+        const selectedKey = document.getElementById("itemName").value;
+        const config = dataPresets[selectedKey];
+        
+        if (config) {
+            document.getElementById("val1").value = config.val1.toFixed(2);
+            document.getElementById("val2").value = config.val2.toFixed(2);
+            document.getElementById("val3").value = config.val3.toFixed(2);
+        }
+        executeCalculation();
+    }
+
+    // Setup Event Listeners for Reactive Real-Time Input & Navigation
+    window.addEventListener("DOMContentLoaded", () => {
+        const UI_Elements = ["rate", "val1", "val2", "val3"];
+        const selector = document.getElementById("itemName");
+        // --- NEW: Generate Dropdown Options Dynamically from dataPresets ---
+        selector.innerHTML = ""; // Clear out any placeholder text
+        Object.keys(dataPresets).forEach(key => {
+            const option = document.createElement("option");
+            option.value = key;
+            option.textContent = `${key}`; // Formats value to display text nicely
+            selector.appendChild(option);
+        });
+        // Real-time calculation on input
+        UI_Elements.forEach(id => {
+            const inputEl = document.getElementById(id);
+            inputEl.addEventListener("input", executeCalculation);
+        });
+
+        // Listen for selection changes on the dropdown menu
+        selector.addEventListener("change", handlePresetShift);
+
+        // Handle Enter Key to Shift Focus
+        const sequenceOrder = ["itemName", ...UI_Elements];
+        document.body.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+                const activeId = document.activeElement.id;
+                const currentIndex = sequenceOrder.indexOf(activeId);
+                
+                if (currentIndex !== -1 && currentIndex < sequenceOrder.length - 1) {
+                    event.preventDefault(); 
+                    const nextElement = document.getElementById(sequenceOrder[currentIndex + 1]);
+                    if (nextElement) {
+                        nextElement.focus();
+                        if (nextElement.type === "number") {
+                            nextElement.select();
+                        }
+                    }
+                }
+            }
+        });
+             handlePresetShift();
+    });
+
+
+
+
+
+
+
+
+    
+  //  14-07-2026  CLAUDE
+  //  12-07-2026  CLAUDE,CLAUDE  (APK)
+  //  12-07-2026  GEMINI,GEMINI @ MJJB-INTERNATIONAL__ O.V.VAGHASIYA
+</script>
+</body>
+</html>
